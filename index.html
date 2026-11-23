@@ -1,1 +1,115 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لـــّيريـس☀</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:linear-gradient(145deg,#fff5e9,#f8e7df,#f5eaf3);
+  font-family:Arial,sans-serif;
+  color:#594b4b;
+}
+.card{
+  width:100%;
+  max-width:420px;
+  padding:35px 24px;
+  border:1px solid #ffffff;
+  border-radius:28px;
+  background:#ffffffc9;
+  box-shadow:0 15px 45px #927b7820;
+  text-align:center;
+}
+.sun{font-size:43px}
+h1{font-size:29px;margin:15px 0;color:#9d777a}
+p{line-height:2;color:#8b7b7b}
+textarea{
+  width:100%;
+  height:160px;
+  padding:16px;
+  border:1px solid #ead9d8;
+  border-radius:18px;
+  resize:vertical;
+  font-size:16px;
+  outline:none;
+  background:#fffafa;
+  font-family:inherit;
+}
+button{
+  width:100%;
+  margin-top:18px;
+  padding:15px;
+  border:0;
+  border-radius:16px;
+  background:#bd969b;
+  color:white;
+  font-size:17px;
+  cursor:pointer;
+}
+button:disabled{opacity:.6}
+#result{font-size:14px}
+small{color:#a18e8e}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="sun">☀️</div>
+  <h1>لـــّيريـس</h1>
+  <p>مساحتك الصغيرة للكلام 🤍<br>
+  اترك لي رسالة، أقرأ كل كلمة بكل اهتمام.</p>
+
+  <form id="messageForm">
+    <textarea id="message"
+    maxlength="2000"
+    placeholder="اكتب رسالتك هنا..."></textarea>
+    <button id="send" type="submit">إرسال رسالتك ♡</button>
+  </form>
+
+  <p id="result" aria-live="polite"></p>
+  <small>رسالتك خاصة ولا يظهر اسمك في الموقع.</small>
+</div>
+
+<script>
+document.getElementById("messageForm")
+.addEventListener("submit", async function(e){
+  e.preventDefault();
+  const box=document.getElementById("message");
+  const result=document.getElementById("result");
+  const button=document.getElementById("send");
+  const message=box.value.trim();
+
+  if(!message){
+    result.textContent="اكتب رسالتك أولاً 🤍";
+    return;
+  }
+
+  button.disabled=true;
+  result.textContent="جاري الإرسال...";
+
+  try{
+    const response=await fetch("/api/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message})
+    });
+    if(!response.ok) throw new Error();
+    box.value="";
+    result.textContent="وصلت رسالتك بنجاح ☀️";
+  }catch(error){
+    result.textContent="خدمة استقبال الرسائل لم تُفعّل بعد.";
+  }finally{
+    button.disabled=false;
+  }
+});
+</script>
+</body>
+</html>
+
